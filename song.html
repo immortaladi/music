@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Player with Panel and Volume Control</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      height: 100vh;
+      margin: 0;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    .music-panel {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      margin-right: 20px;
+      margin-bottom: 20px;
+    }
+
+    .song-list {
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .song-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .song-list li:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .song-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      margin-right: 10px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .volume-control {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .volume-control input[type="range"] {
+      width: 100%;
+      margin-left: 10px;
+    }
+
+    .music-image {
+      width: 100%;
+      height: 300px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      animation: gradient-animation 5s infinite alternate;
+    }
+
+    @keyframes gradient-animation {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="music-panel">
+    <div class="music-image" id="music-image"></div>
+    <div class="controls">
+      <button id="prevBtn">⏮️</button>
+      <button id="playPauseBtn">⏯️</button>
+      <button id="nextBtn">⏭️</button>
+    </div>
+
+    <div class="volume-control">
+      <label for="volumeSlider">🔊</label>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+    </div>
+    
+    <ul class="song-list" id="song-list">
+      <!-- Songs will be added here dynamically -->
+    </ul>
+    
+    <audio id="audio" src=""></audio>
+  </div>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const musicImage = document.getElementById('music-image');
+    const songList = document.getElementById('song-list');
+    const volumeSlider = document.getElementById('volumeSlider');
+
+    const songs = [
+      {
+        name: 'Song 1',
+        src: 'song1.mp3',
+        image: 'image1.jpg'
+      },
+      {
+        name: 'Song 2',
+        src: 'song2.mp3',
+        image: 'image2.jpg'
+      },
+      {
+        name: 'Song 3',
+        src: 'song3.mp3',
+        image: 'image3.jpg'
+      }
+    ];
+
+    let currentSongIndex = 0;
+
+    // Function to load song
+    function loadSong(song) {
+      audio.src = song.src;
+      musicImage.style.backgroundImage = `url(${song.image})`;
+    }
+
+    // Toggle play/pause
+    function playPauseSong() {
+      if (audio.paused) {
+        audio.play();
+        playPauseBtn.textContent = '⏸️';
+      } else {
+        audio.pause();
+        playPauseBtn.textContent = '⏯️';
+      }
+    }
+
+    // Previous song
+    function prevSong() {
+      currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+      loadSong(songs[currentSongIndex]);
+      playPauseSong();
+    }
+
+    // Next song
+    function nextSong() {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
+      loadSong(songs[currentSongIndex]);
+      playPauseSong();
+    }
+
+    // Load songs into the panel
+    function loadSongList() {
+      songs.forEach((song, index) => {
+        const li = document.createElement('li');
+        const img = document.createElement('div');
+        const songName = document.createElement('span');
+
+        img.classList.add('song-image');
+        img.style.backgroundImage = `url(${song.image})`;
+
+        songName.textContent = song.name;
+
+        li.appendChild(img);
+        li.appendChild(songName);
+
+        // Add click event to switch song
+        li.addEventListener('click', () => {
+          currentSongIndex = index;
+          loadSong(songs[currentSongIndex]);
+          playPauseSong();
+        });
+
+        songList.appendChild(li);
+      });
+    }
+
+    // Volume control
+    volumeSlider.addEventListener('input', function() {
+      audio.volume = volumeSlider.value;
+    });
+
+    // Event listeners for buttons
+    playPauseBtn.addEventListener('click', playPauseSong);
+    prevBtn.addEventListener('click', prevSong);
+    nextBtn.addEventListener('click', nextSong);
+
+    // Initialize the player with the first song
+    loadSong(songs[currentSongIndex]);
+    loadSongList();
+  </script>
+
+</body>
+</html>

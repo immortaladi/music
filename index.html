@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Player with Panel and Volume Control</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="music-panel">
+    <div class="music-image" id="music-image"></div>
+    <div class="controls">
+      <button id="prevBtn">⏮️</button>
+      <button id="playPauseBtn">⏯️</button>
+      <button id="nextBtn">⏭️</button>
+    </div>
+
+    <div class="volume-control">
+      <label for="volumeSlider">🔊</label>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+    </div>
+    
+    <ul class="song-list" id="song-list">
+      <!-- Songs will be added here dynamically -->
+    </ul>
+    
+    <audio id="audio" src=""></audio>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
